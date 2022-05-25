@@ -19,17 +19,26 @@ new Mongoose.Schema(
         Address:String
     }
 ))
+var facultyModel=Mongoose.model("faculties",
+new Mongoose.Schema(
+    {Name:String,
+    Mobile:String,
+    Education:String,
+    Address:String,
+    Pincode:String,
+    District:String
+    }))
 
 Mongoose.connect("mongodb+srv://snehasam:snehasa4@cluster0.yyrcr.mongodb.net/Collegedb")
 
 app.post("/api/addstudent",(req,res)=>{
-var getAdmnno=req.body.admnno 
-var getRollno=req.body.rollno 
-var getName=req.body.name 
-var getClass=req.body.classes
-var getParent=req.body.parent 
-var getPhn=req.body.phone 
-var getAddress=req.body.address 
+var getAdmnno=req.body.Admissionno 
+var getRollno=req.body.Rollno 
+var getName=req.body.Name 
+var getClass=req.body.Class
+var getParent=req.body.Parent 
+var getPhn=req.body.Phone 
+var getAddress=req.body.Address 
 var datas={"Admissionno":getAdmnno,"Rollno":getRollno,"Name":getName,"Class":getClass,"Parent":getParent,"Phone":getPhn,"Address":getAddress}
 let studentadd=new studentModel(datas)
 studentadd.save((error,datas)=>{
@@ -44,14 +53,24 @@ studentadd.save((error,datas)=>{
 })
 
 app.post("/api/addfaculty",(req,res)=>{
-    var getName=req.body.name 
-    var getMobile=req.body.mobile 
-    var getEducation=req.body.education 
-    var getAddress=req.body.address 
-    var getPin=req.body.pincode
-    var getDistrict=req.body.district 
+    var getName=req.body.Name 
+    var getMobile=req.body.Mobile 
+    var getEducation=req.body.Education 
+    var getAddress=req.body.Address 
+    var getPin=req.body.Pincode
+    var getDistrict=req.body.District 
     var details={"Name":getName,"Mobile":getMobile,"Education":getEducation,"Address":getAddress,"Pincode":getPin,"District":getDistrict}
-    res.send(details)
+    let facultydata= new facultyModel(details)
+    facultydata.save((error,details)=>{
+        if(error)
+        {
+            res.send({"status":"error","data":error})
+        }
+        else
+        {
+            res.send({"status":"success","data":details})
+        }
+    })
 })
 
 app.get("/api/viewstudent",(req,res)=>{
