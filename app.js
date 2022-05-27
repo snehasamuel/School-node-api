@@ -6,7 +6,11 @@ const Bodyparser=require("body-parser")
 let app=Express()
 app.use(Bodyparser.urlencoded({extended:true}))
 app.use(Bodyparser.json())
-
+app.use((req, res, next) => { 
+    res.setHeader("Access-Control-Allow-Origin", "*");  
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"   ); 
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS"   ); 
+    next(); });
 var studentModel=Mongoose.model("students",
 new Mongoose.Schema(
     {
@@ -39,15 +43,15 @@ var getClass=req.body.Class
 var getParent=req.body.Parent 
 var getPhn=req.body.Phone 
 var getAddress=req.body.Address 
-var datas={"Admissionno":getAdmnno,"Rollno":getRollno,"Name":getName,"Class":getClass,"Parent":getParent,"Phone":getPhn,"Address":getAddress}
-let studentadd=new studentModel(datas)
-studentadd.save((error,datas)=>{
+var data={"Admissionno":getAdmnno,"Rollno":getRollno,"Name":getName,"Class":getClass,"Parent":getParent,"Phone":getPhn,"Address":getAddress}
+let studentadd=new studentModel(data)
+studentadd.save((error,data)=>{
     if(error)
     {
         res.send({"status":"error","datas":error})
     }
     else{
-        res.send({"status":"success","datas":datas})
+        res.send({"status":"success","data":data})
     }
 })
 })
@@ -59,26 +63,44 @@ app.post("/api/addfaculty",(req,res)=>{
     var getAddress=req.body.Address 
     var getPin=req.body.Pincode
     var getDistrict=req.body.District 
-    var details={"Name":getName,"Mobile":getMobile,"Education":getEducation,"Address":getAddress,"Pincode":getPin,"District":getDistrict}
-    let facultydata= new facultyModel(details)
-    facultydata.save((error,details)=>{
+    var data={"Name":getName,"Mobile":getMobile,"Education":getEducation,"Address":getAddress,"Pincode":getPin,"District":getDistrict}
+    let facultydata= new facultyModel(data)
+    facultydata.save((error,data)=>{
         if(error)
         {
             res.send({"status":"error","data":error})
         }
         else
         {
-            res.send({"status":"success","data":details})
+            res.send({"status":"success","data":data})
         }
     })
 })
 
 app.get("/api/viewstudent",(req,res)=>{
-    res.send("Hello")
+    studentModel.find((error,data)=>{
+if(error)
+{
+    res.send(error)
+}
+else
+{
+    res.send(data)
+}
+    })
 })
 
 app.get("/api/viewfaculty",(req,res)=>{
-    res.send("Welcome")
+   facultyModel.find((error,data)=>{
+if(error)
+{
+    res.send(error)
+}
+else
+{
+    res.send(data)
+}
+   })
 })
 
 app.listen(5000,()=>{
